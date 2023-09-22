@@ -74,7 +74,10 @@ abstract class Secp256k1Base<
     CtxPtr, PubKeyPtr, RecoverableSignaturePtr, HeapArrayPtr,
   ) extEcdsaRecover;
   late int Function(CtxPtr, HeapArrayPtr, HeapArrayPtr) extEcSeckeyTweakAdd;
+  late int Function(CtxPtr, HeapArrayPtr, HeapArrayPtr) extEcSeckeyTweakMul;
   late int Function(CtxPtr, PubKeyPtr, HeapArrayPtr) extEcPubkeyTweakAdd;
+  late int Function(CtxPtr, PubKeyPtr, HeapArrayPtr) extEcPubkeyTweakMul;
+  late int Function(CtxPtr, HeapArrayPtr) extEcPrivkeyNegate;
 
   // Heap arrays
   late HeapArrayBase privKeyArray;
@@ -348,7 +351,7 @@ abstract class Secp256k1Base<
 
   /// Tweaks a private key ([privKey]) by a [scalar]. Returns null if a tweaked
   /// private key could not be created.
-  Uint8List? privKeyTweak(Uint8List privKey, Uint8List scalar) {
+  Uint8List? privKeyTweakAdd(Uint8List privKey, Uint8List scalar) {
     _requireLoad();
 
     privKeyArray.load(privKey);
@@ -363,18 +366,59 @@ abstract class Secp256k1Base<
 
   }
 
+  Uint8List? privKeyTweakMul(Uint8List privKey, Uint8List scalar) {
+    _requireLoad();
+
+    privKeyArray.load(privKey);
+    scalarArray.load(scalar);
+
+    if (extEcSeckeyTweakMul(ctxPtr, privKeyArray.ptr, scalarArray.ptr) != 1) {
+      return null;
+    }
+
+    // Return copy of private key or contents are subject to change
+    return Uint8List.fromList(privKeyArray.list);
+  }
+
+  Uint8List? privKeyNegate(Uint8List privKey) {
+    _requireLoad();
+
+    privKeyArray.load(privKey);
+
+    if (extEcPrivkeyNegate(ctxPtr, privKeyArray.ptr) != 1) {
+      return null;
+    }
+
+    // Return copy of private key or contents are subject to change
+    return Uint8List.fromList(privKeyArray.list);
+  }
+
   /// Tweaks a public key ([pubKey]) by adding the generator point multiplied by
   /// the givern [scalar]. The resulting public key corresponds to the
   /// private key tweaked by the same scalar. Returns null if a public key could
   /// not be created. Will return a compressed public key if [compressed] is
   /// true regardless of the size of the passed [pubKey].
-  Uint8List? pubKeyTweak(Uint8List pubKey, Uint8List scalar, bool compressed) {
+  Uint8List? pubKeyTweakAdd(Uint8List pubKey, Uint8List scalar, bool compressed) {
     _requireLoad();
 
     _parsePubkeyIntoPtr(pubKey);
     scalarArray.load(scalar);
 
     if (extEcPubkeyTweakAdd(ctxPtr, pubKeyPtr, scalarArray.ptr) != 1) {
+      return null;
+    }
+
+    return _serializePubKeyFromPtr(compressed);
+
+  }
+
+  Uint8List? pubKeyTweakMul(Uint8List pubKey, Uint8List scalar, bool compressed) {
+    _requireLoad();
+
+    _parsePubkeyIntoPtr(pubKey);
+    scalarArray.load(scalar);
+
+    if (extEcPubkeyTweakMul(ctxPtr, pubKeyPtr, scalarArray.ptr) != 1) {
       return null;
     }
 

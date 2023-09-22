@@ -76,7 +76,10 @@ class Secp256k1 extends Secp256k1Base<
     extEcdsaSignRecoverable = _lib.secp256k1_ecdsa_sign_recoverable;
     extEcdsaRecover = _lib.secp256k1_ecdsa_recover;
     extEcSeckeyTweakAdd = _lib.secp256k1_ec_seckey_tweak_add;
+    extEcSeckeyTweakMul = _lib.secp256k1_ec_seckey_tweak_mul;
     extEcPubkeyTweakAdd = _lib.secp256k1_ec_pubkey_tweak_add;
+    extEcPubkeyTweakMul = _lib.secp256k1_ec_pubkey_tweak_mul;
+    extEcPrivkeyNegate = _lib.secp256k1_ec_privkey_negate;
 
     // Set heap arrays
     privKeyArray = HeapArrayFfi(Secp256k1Base.privkeySize);

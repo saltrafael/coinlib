@@ -80,9 +80,18 @@ class Secp256k1 extends Secp256k1Base<int, int, int, int,int, int, int, int> {
     extEcSeckeyTweakAdd
       = inst.functions["secp256k1_ec_seckey_tweak_add"]
       as IntFunc3;
+    extEcSeckeyTweakMul 
+      = inst.functions["secp256k1_ec_seckey_tweak_mul"]
+      as IntFunc3;
     extEcPubkeyTweakAdd
       = inst.functions["secp256k1_ec_pubkey_tweak_add"]
       as IntFunc3;
+    extEcPubkeyTweakMul
+      = inst.functions["secp256k1_ec_pubkey_tweak_mul"]
+      as IntFunc3;
+    extEcPrivkeyNegate
+      = inst.functions["secp256k1_ec_privkey_negate"]
+      as IntFunc2;
 
     // Local functions for loading purposes
     final contextCreate = inst.functions["secp256k1_context_create"]

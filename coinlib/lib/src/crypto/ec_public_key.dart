@@ -41,10 +41,15 @@ class ECPublicKey {
   /// Tweaks the public key with a scalar multiplied by the generator point. In
   /// the instance a new key cannot be created (practically impossible for
   /// random 32-bit scalars), then null will be returned.
-  ECPublicKey? tweak(Uint8List scalar) {
+  ECPublicKey? tweak(Uint8List scalar, {bool? compress}) {
     checkBytes(scalar, 32, name: "Scalar");
-    final newKey = secp256k1.pubKeyTweak(_data, scalar, compressed);
+    final newKey = secp256k1.pubKeyTweakAdd(_data, scalar, compress ?? compressed);
     return newKey == null ? null : ECPublicKey(newKey);
   }
 
+  ECPublicKey? mul(Uint8List scalar, {bool? compress}) {
+    checkBytes(scalar, 32, name: "Scalar");
+    final newKey = secp256k1.pubKeyTweakMul(_data, scalar, compress ?? compressed);
+    return newKey == null ? null : ECPublicKey(newKey);
+  }
 }

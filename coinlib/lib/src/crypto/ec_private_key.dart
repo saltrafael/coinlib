@@ -49,8 +49,18 @@ class ECPrivateKey {
   /// be returned.
   ECPrivateKey? tweak(Uint8List scalar) {
     checkBytes(scalar, 32, name: "Scalar");
-    final newScalar = secp256k1.privKeyTweak(_data, scalar);
+    final newScalar = secp256k1.privKeyTweakAdd(_data, scalar);
     return newScalar == null ? null : ECPrivateKey(newScalar, compressed: compressed);
   }
 
+  ECPrivateKey? mul(Uint8List scalar) {
+    checkBytes(scalar, 32, name: "Scalar");
+    final newScalar = secp256k1.privKeyTweakMul(_data, scalar);
+    return newScalar == null ? null : ECPrivateKey(newScalar, compressed: compressed);
+  }
+
+  ECPrivateKey? negate() {
+    final negated = secp256k1.privKeyNegate(_data);
+    return negated == null ? null : ECPrivateKey(negated, compressed: compressed);
+  }
 }
