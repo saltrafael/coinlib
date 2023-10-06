@@ -27,18 +27,23 @@ String _libraryPath() {
 
   // Exists in build directory?
   final libBuildPath = join(Directory.current.path, "build", localLib);
-  print("Looking for $libBuildPath");
   if (File(libBuildPath).existsSync()) {
     return libBuildPath;
   }
 
   // Load from flutter library name
-  print("Loading from $flutterLib");
   return flutterLib;
 
 }
 
-DynamicLibrary _openLibrary() => DynamicLibrary.open(_libraryPath());
+DynamicLibrary? _openLibrary() {
+  try {
+    return DynamicLibrary.open(_libraryPath());
+  } catch (e) {
+    print("Error $e loading from ${_libraryPath()}");
+  }
+  return null;
+}
 
 /// Specialises Secp256k1Base to use the FFI
 class Secp256k1 extends Secp256k1Base<
@@ -52,7 +57,7 @@ class Secp256k1 extends Secp256k1Base<
   Pointer<Never>
 > {
 
-  final _lib = NativeSecp256k1(_openLibrary());
+  final _lib = NativeSecp256k1(_openLibrary()!);
 
   Secp256k1() {
 
