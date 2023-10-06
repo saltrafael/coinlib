@@ -77,6 +77,7 @@ abstract class Secp256k1Base<
   late int Function(CtxPtr, HeapArrayPtr, HeapArrayPtr) extEcSeckeyTweakMul;
   late int Function(CtxPtr, PubKeyPtr, HeapArrayPtr) extEcPubkeyTweakAdd;
   late int Function(CtxPtr, PubKeyPtr, HeapArrayPtr) extEcPubkeyTweakMul;
+  late int Function(CtxPtr, PubKeyPtr) extEcPubkeyNegate;
   late int Function(CtxPtr, HeapArrayPtr) extEcPrivkeyNegate;
 
   // Heap arrays
@@ -424,6 +425,18 @@ abstract class Secp256k1Base<
 
     return _serializePubKeyFromPtr(compressed);
 
+  }
+
+  Uint8List? pubKeyNegate(Uint8List pubKey, bool compressed) {
+    _requireLoad();
+
+    _parsePubkeyIntoPtr(pubKey);
+
+    if (extEcPubkeyNegate(ctxPtr, pubKeyPtr) != 1) {
+      return null;
+    }
+
+    return _serializePubKeyFromPtr(compressed);
   }
 
   /// Specialised sub-classes should override to set the value behind the

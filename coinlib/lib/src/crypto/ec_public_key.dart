@@ -52,4 +52,9 @@ class ECPublicKey {
     final newKey = secp256k1.pubKeyTweakMul(_data, scalar, compress ?? compressed);
     return newKey == null ? null : ECPublicKey(newKey);
   }
+
+  ECPublicKey? negate({bool? compress}) {
+    final newKey = secp256k1.pubKeyNegate(_data, compress ?? compressed);
+    return newKey == null ? null : ECPublicKey(newKey);
+  }
 }

@@ -79,6 +79,7 @@ class Secp256k1 extends Secp256k1Base<
     extEcSeckeyTweakMul = _lib.secp256k1_ec_seckey_tweak_mul;
     extEcPubkeyTweakAdd = _lib.secp256k1_ec_pubkey_tweak_add;
     extEcPubkeyTweakMul = _lib.secp256k1_ec_pubkey_tweak_mul;
+    extEcPubkeyNegate = _lib.secp256k1_ec_pubkey_negate;
     extEcPrivkeyNegate = _lib.secp256k1_ec_privkey_negate;
 
     // Set heap arrays
