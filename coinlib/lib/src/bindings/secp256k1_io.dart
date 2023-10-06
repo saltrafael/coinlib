@@ -27,11 +27,13 @@ String _libraryPath() {
 
   // Exists in build directory?
   final libBuildPath = join(Directory.current.path, "build", localLib);
+  print("Looking for $libBuildPath");
   if (File(libBuildPath).existsSync()) {
     return libBuildPath;
   }
 
   // Load from flutter library name
+  print("Loading from $flutterLib");
   return flutterLib;
 
 }
